@@ -19,7 +19,6 @@ function App() {
         if(!showButton)
         if(time > 0){
              const id = setTimeout(()=>setTime(time - 1), 1000);
-             console.log(id)
              setTimeoutId(id);
              return () => clearTimeout(timeoutId)
         }
