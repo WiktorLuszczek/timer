@@ -1,39 +1,57 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
-import reactLogo from "./assets/react.svg";
 import "./App.css";
 
 function App() {
-    const [count, setCount] = useState(0);
+    const [minute, setMinute] = useState<number>(1);
+    const [second, setSecond] = useState<number>(0)
+    const [time, setTime] = useState<number>(0);
+    const [showButton ,setShowButton] = useState<boolean>(true)
+    const [timeoutId, setTimeoutId] = useState<number>(0)
+    const start = () => {
+        setTime((minute * 60) + second)
+        setShowButton(!showButton)
+    }
+    const stop = () => {
+        setShowButton(!showButton)
+    }
+    useEffect(() =>{
+        if(!showButton)
+        if(time > 0){
+             const id = setTimeout(()=>setTime(time - 1), 1000);
+             console.log(id)
+             setTimeoutId(id);
+             return () => clearTimeout(timeoutId)
+        }
+    },[time]);
 
-    return (
-        <div className="App">
-            <div>
-                <a href="https://vitejs.dev" target="_blank" rel="noreferrer">
-                    <img src="/vite.svg" className="logo" alt="Vite logo" />
-                </a>
-                <a href="https://reactjs.org" target="_blank" rel="noreferrer">
-                    <img
-                        src={reactLogo}
-                        className="logo react"
-                        alt="React logo"
-                    />
-                </a>
-            </div>
-            <h1>Vite + React</h1>
-            <div className="card">
-                <button onClick={() => setCount((count) => count + 1)}>
-                    count is {count}
-                </button>
-                <p>
-                    Edit <code>src/App.tsx</code> and save to test HMR
-                </p>
-            </div>
-            <p className="read-the-docs">
-                Click on the Vite and React logos to learn more
-            </p>
-        </div>
-    );
+    return(
+        <>
+            <label>Minuty: </label>
+            <input type="number" defaultValue={1} onChange={(e) => setMinute(Number(e.target.value))} min={0}></input>
+            <label>Sekundy: </label>
+            <input type="number" defaultValue={0} onChange={(e) => setSecond(Number(e.target.value))} min={0} max={60}></input>
+            <br></br>
+            {showButton ? 
+                <button onClick={start}>Start / Restart</button>
+                :
+                <button onClick={stop}>Stop</button>
+            }
+            <br></br>
+            <p>  Minuty : sekundy</p>
+            <span>{
+                Math.ceil((time) / 60) - 1 < 0 
+                ? 
+                0 
+                : Math.ceil((time +1 )/ 60) - 1
+            }
+            : 
+            {
+                time % 60
+            }
+            </span>
+        </>
+    )
 }
 
 export default App;
